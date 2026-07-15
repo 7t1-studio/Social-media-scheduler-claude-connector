@@ -1,0 +1,10 @@
+{
+  "mcpServers": {
+    "so-me-studio": {
+      "url": "https://api.so-me.studio/mcp",
+      "headers": {
+        "X-API-Key": "<YOUR_SO_ME_API_KEY>"
+      }
+    }
+  }
+}
