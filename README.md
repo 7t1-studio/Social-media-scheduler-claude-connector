@@ -8,10 +8,12 @@ This repository holds **public packaging and docs** for directory listings and c
 
 | | |
 |---|---|
-| **MCP URL** | `https://api.so-me.studio/mcp` |
+| **Directory MCP URL** | `https://api.so-me.studio/mcp/directory` (Claude / ChatGPT marketplace — no AI media tools) |
+| **Full MCP URL** | `https://api.so-me.studio/mcp` (developers / Cursor — full catalog) |
 | **Transport** | Streamable HTTP (`POST`) |
 | **Product docs** | [docs.so-me.studio/mcp/overview](https://docs.so-me.studio/mcp/overview) |
 | **Website** | [so-me.studio](https://so-me.studio) |
+| **Listing copy** | [docs/listing-copy.md](docs/listing-copy.md) · icon [assets/icon.svg](assets/icon.svg) |
 
 ## Authentication
 

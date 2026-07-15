@@ -1,8 +1,13 @@
 # Connect Claude to So-me Studio MCP
 
-So-me Studio’s MCP server is a remote **Streamable HTTP** endpoint at `https://api.so-me.studio/mcp`.
+So-me Studio’s MCP server is a remote **Streamable HTTP** endpoint.
 
-**Claude Directory** listings authenticate with **OAuth** (no pasted API key). For **custom connectors** and local setups, use an API key (`sk_live_...`) from **Settings → API Access** (Team+ plan). See also [config/claude.custom-connector.md](../config/claude.custom-connector.md).
+| Surface | URL |
+|---------|-----|
+| **Claude Directory** | `https://api.so-me.studio/mcp/directory` |
+| **Custom / developer** | `https://api.so-me.studio/mcp` |
+
+**Claude Directory** listings authenticate with **OAuth** (no pasted API key). For **custom connectors** and local setups, use an API key (`sk_live_...`) from **Settings → API Access** (Team+ plan). See also [config/claude.custom-connector.md](../config/claude.custom-connector.md). Listing draft: [listing-copy.md](listing-copy.md).
 
 You can connect Claude Desktop through the built-in **Connectors** UI or by bridging with `mcp-remote` in `claude_desktop_config.json`.
 
