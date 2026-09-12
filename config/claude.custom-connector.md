@@ -38,6 +38,10 @@ Directory-listed So-me Studio connectors use **OAuth** so end users never paste 
 
 Custom connectors may continue to use `X-API-Key` for developers and Cursor; directory users should prefer OAuth when offered.
 
+## YouTube first comment needs a reconnect
+
+`firstComment` on YouTube uses `commentThreads.insert`, which needs the `https://www.googleapis.com/auth/youtube.force-ssl` permission. Uploading does not. Every YouTube account connected before that permission was added must reconnect in So-me Studio. Until it does, the post publishes and the comment fails; `firstCommentError` on the post says exactly this. This is a social-account permission in So-me Studio, not an MCP connector setting: the connector's own auth (`X-API-Key` or OAuth) is unchanged.
+
 ## Security tips
 
 - Prefer a dedicated API key per client; revoke unused keys promptly.
