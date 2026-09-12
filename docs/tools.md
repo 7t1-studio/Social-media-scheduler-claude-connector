@@ -4,9 +4,11 @@ This is a **directory-safe** summary of So-me Studio MCP capabilities for Claude
 
 Full product reference: https://docs.so-me.studio/mcp/tools
 
-**Auth:** OAuth (directory) or `X-API-Key: sk_live_...` (custom). **Plan:** Team+ for API access. Endpoint: `https://api.so-me.studio/mcp`.
+**Auth:** OAuth (directory) or `X-API-Key: sk_live_...` (custom). **Plan:** Team+ for API access. Endpoints: the Claude directory listing uses `https://api.so-me.studio/mcp/directory`; custom connectors and Cursor use the full catalog at `https://api.so-me.studio/mcp`.
 
-This connector uses the full `/mcp` endpoint, so every tool below is available to it. `validate_post_media`, `get_media_rules` and `get_tiktok_creator_info` are also on the restricted `/mcp/posting` profile that the Grok and ChatGPT plugins use, which carries 31 tools. `threadParts`, `firstComment` and `tiktok` are fields on the existing write tools, so they are available wherever those tools are.
+The directory surface (`/mcp/directory`) is the full catalog minus the tools listed under *Excluded from marketplace*; a custom connector on `/mcp` gets every tool. `validate_post_media`, `get_media_rules` and `get_tiktok_creator_info` are also on the restricted `/mcp/posting` profile that the Grok and ChatGPT plugins use, which carries 31 tools.
+
+Tool descriptions on the server state what each tool does. The step-by-step guidance in this document (what to check before posting, what to ask the user) is documentation for agents and integrators, not part of the tool descriptions. `threadParts`, `firstComment` and `tiktok` are fields on the existing write tools, so they are available wherever those tools are.
 
 ## Excluded from marketplace
 
@@ -14,9 +16,10 @@ These tools are **not** part of the directory submission surface:
 
 - `generate_image`, `list_generated_images`, `get_generated_image`, `delete_generated_image`, `list_ai_image_providers`
 - `generate_video`, `list_videos`, `get_video`, `delete_video`, `list_avatars`, `list_sounds`, `get_sound_genres`, `list_ai_video_providers`
+- `generate_hook_suggestions` (AI hook ideas; kept off the directory surface with the other generative media helpers)
 - Compound flows that depend on AI media (e.g. image/video legs of `generate_and_schedule` when used for media generation)
 
-Caption / text AI (`generate_caption`, `generate_content`, `generate_hook_suggestions`) remain allowed.
+Caption / text AI (`generate_caption`, `generate_content`) remains allowed.
 
 ---
 
@@ -184,7 +187,7 @@ When you produced the media, apply the `fix` (crop or resize) and validate again
 |------|-------------|
 | `generate_caption` | Generate a caption |
 | `generate_content` | Generate text content |
-| `generate_hook_suggestions` | Hook suggestions |
+| `generate_hook_suggestions` | Hook suggestions (full `/mcp` only, not on the directory surface) |
 | `get_ai_history` | Recent AI text history |
 | `get_ai_credits` | Remaining AI credits |
 
