@@ -29,6 +29,13 @@ API / MCP access requires a **Team+** plan (or higher) on so-me.studio. Create a
 
 Marketplace-facing tools cover posts, drafts, connected accounts, media library, inbox, analytics, and caption/text AI — without AI image or video generation (directory policy). See [docs/tools.md](docs/tools.md).
 
+Posting also covers multi-post chains, an automatic first comment, and TikTok's required publishing options:
+
+- **Chains** — put the head post in `text` and the posts that follow it in `threadParts`, on X (280 characters per part), Threads (500), Bluesky (300 graphemes), and Mastodon (500) only, at most 24 parts.
+- **First comment** — `firstComment` posts one comment under the post right after it publishes, on Facebook, Instagram, X, LinkedIn, LinkedIn Page, Threads, and YouTube. An unsupported target still publishes and returns a `FIRST_COMMENT_UNSUPPORTED` warning. Read `capabilities.firstComment` from `list_accounts` first.
+- **TikTok** — never guess the privacy level. Call `get_tiktok_creator_info`, offer only the options it returns, recommend `PUBLIC_TO_EVERYONE`, ask whether comments are allowed, then send the `tiktok` object. A TikTok post without `tiktok.privacyLevel` is rejected.
+- **Media** — `validate_post_media` measures pixel size, aspect ratio, codec, and frame rate and returns a `fix` string for each mismatch; `get_media_rules` returns the per-platform table.
+
 ## Quick setup
 
 - **Claude Desktop** — [docs/setup-claude.md](docs/setup-claude.md) (Connectors UI or `mcp-remote`)
