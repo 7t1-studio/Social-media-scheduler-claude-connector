@@ -1,48 +1,58 @@
-# Connect Claude to So-me Studio MCP
+# Connect Claude to Social media studio
 
-So-me Studio’s MCP server is a remote **Streamable HTTP** endpoint.
+Social media studio (powered by So-me Studio) runs as a remote **Streamable HTTP** MCP server.
 
-| Surface | URL |
-|---------|-----|
-| **Claude Directory** | `https://api.so-me.studio/mcp/directory` |
-| **Custom / developer** | `https://api.so-me.studio/mcp` |
+| Use | URL | Sign-in |
+|-----|-----|---------|
+| Claude plugin and Claude directory connector | `https://api.so-me.studio/mcp/claude` | OAuth in the browser |
+| Developers who need the full tool catalog | `https://api.so-me.studio/mcp` | `X-API-Key` header |
 
-**Claude Directory** listings authenticate with **OAuth** (no pasted API key). For **custom connectors** and local setups, use an API key (`sk_live_...`) from **Settings → API Access** (Team+ plan). See also [config/claude.custom-connector.md](../config/claude.custom-connector.md). Listing draft: [listing-copy.md](listing-copy.md).
+`/mcp/claude` carries the 28 posting tools listed in [tools.md](tools.md). You need a So-me Studio account with API/MCP access and social accounts connected in So-me Studio.
 
-You can connect Claude Desktop through the built-in **Connectors** UI or by bridging with `mcp-remote` in `claude_desktop_config.json`.
+## Option 1: Install from the Claude directory
 
-## Option 1: Connectors UI (recommended)
+1. On claude.ai or in the desktop app, open **Customize > Plugins**, find **Social media studio**, and add it. In Claude Code, run `/plugin` and add it from the directory.
+2. Connect the plugin's connector: on claude.ai and in Cowork from the plugin's **Connectors** tab, in Claude Code with `/mcp`.
+3. Sign in to So-me Studio in the browser window and approve the connection.
+4. Ask Claude to list your connected accounts or to draft a post.
 
-1. In Claude Desktop go to **Settings → Connectors → Add custom connector**.
-2. Enter the server details:
+On Team and Enterprise plans, an Owner may need to add the connector for the organization first; members then connect with their own So-me Studio account.
 
-   | Field | Value |
-   |-------|-------|
-   | Name | `so-me-studio` |
-   | Remote MCP server URL | `https://api.so-me.studio/mcp` |
+## Option 2: Add the connector by URL
 
-3. Provide the API key: add an HTTP header named `X-API-Key` with your key (`sk_live_...`) as the value, then save.
-4. Open a new conversation. So-me Studio tools appear in the tools menu — ask Claude to list your posts or create a new one.
+Use this before the directory listing is live, or without the plugin's skill.
 
-If you install So-me Studio from the **Claude Connectors Directory**, follow the in-product OAuth flow instead of pasting `X-API-Key`.
+1. Open **Customize > Connectors** and select **Add custom connector**. You can also open this link, which fills in the form: [add Social media studio](https://claude.ai/customize/connectors?modal=add-custom-connector&connectorName=Social%20media%20studio&connectorUrl=https%3A%2F%2Fapi.so-me.studio%2Fmcp%2Fclaude).
+2. Set the name to `Social media studio` and the URL to `https://api.so-me.studio/mcp/claude`. Leave the OAuth client ID and secret empty.
+3. Select **Connect**, sign in to So-me Studio, and approve.
+4. In a chat, turn the connector on from **+ > Connectors**.
 
-## Option 2: mcp-remote bridge
+## Option 3: Claude Code
 
-If your build of Claude Desktop edits servers through the config file, bridge the remote HTTP server with [`mcp-remote`](https://www.npmjs.com/package/mcp-remote). Classic `claude_desktop_config.json` only launches local (stdio) commands, so the URL and header are passed to the bridge.
+Load the whole plugin (skill and connector) from a local copy of this repository:
 
-1. Open the config file via **Settings → Developer → Edit Config**, or open it directly:
+```bash
+claude --plugin-dir ./Social-media-scheduler-claude-connector
+```
 
-   | OS | Path |
-   |----|------|
-   | macOS | `~/Library/Application Support/Claude/claude_desktop_config.json` |
-   | Windows | `%APPDATA%\Claude\claude_desktop_config.json` |
+Or add only the connector:
 
-2. Add the MCP server:
+```bash
+claude mcp add --transport http so-me-studio https://api.so-me.studio/mcp/claude
+```
+
+Then run `/mcp`, select the server, and sign in. Claude Code opens the browser and receives the sign-in on a local `localhost` port.
+
+## Option 4: Developers — full catalog with an API key
+
+The full catalog at `https://api.so-me.studio/mcp` includes tools that the directory does not allow, such as AI image and video generation, so it is not offered through the plugin. It authenticates with an API key (`sk_live_...`) from **Settings > API Access** in So-me Studio.
+
+Claude's **Request headers** option for custom connectors is a beta for a limited set of organizations. Everyone else can bridge the server with [`mcp-remote`](https://www.npmjs.com/package/mcp-remote) in `claude_desktop_config.json` (**Settings > Developer > Edit Config**):
 
 ```json
 {
   "mcpServers": {
-    "so-me-studio": {
+    "so-me-studio-full": {
       "command": "npx",
       "args": [
         "-y",
@@ -56,22 +66,27 @@ If your build of Claude Desktop edits servers through the config file, bridge th
 }
 ```
 
-**Important:** Do not put a space after the colon in the `--header` value. `mcp-remote` splits the header on the first `:` and a leading space in the value will be sent literally.
-
-3. Save the file and fully quit and reopen Claude Desktop.
-4. Verify by asking Claude to list your posts or create a new one.
+Do not put a space after the colon in the `--header` value. Fully quit and reopen Claude Desktop after you save the file. See also [../config/claude.custom-connector.md](../config/claude.custom-connector.md).
 
 ## Troubleshooting
 
-### 401 / Missing X-API-Key header
+### The connector shows Connect or Reconnect
 
-The header name must be exactly `X-API-Key` and the value must be an active key beginning with `sk_live_`. With the `mcp-remote` bridge, double-check there is no stray space after the colon.
+Sign-in did not finish. Select **Connect** again and complete the So-me Studio sign-in and approval in the browser. Allow pop-ups for claude.ai if the window does not open.
+
+### A tool says the workspace has no API/MCP access or no credits
+
+The So-me Studio workspace plan or credit balance blocks the call. Check the workspace in So-me Studio.
+
+### 401 or "Missing X-API-Key header" on `/mcp`
+
+Only the full-catalog URL uses API keys. The header name must be exactly `X-API-Key`, and the value must be an active key that starts with `sk_live_`.
 
 ### 405 Method Not Allowed
 
-The So-me Studio server runs in stateless Streamable HTTP mode and only accepts `POST` requests. `mcp-remote` and the Connectors UI both speak Streamable HTTP; no SSE configuration is required.
+The server runs in stateless Streamable HTTP mode and accepts only `POST`. Claude's connectors and `mcp-remote` both use Streamable HTTP; no SSE setup is needed.
 
-## More docs
+## More
 
-- Product overview: https://docs.so-me.studio/mcp/overview
+- Product docs: https://docs.so-me.studio/mcp/overview
 - Claude Desktop guide: https://docs.so-me.studio/mcp/claude-desktop
