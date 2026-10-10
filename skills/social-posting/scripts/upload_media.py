@@ -7,10 +7,11 @@ from pathlib import Path
 import sys
 from urllib.parse import urlsplit
 
-# So-me Studio presigns path-style URLs on its Cloudflare R2 S3 endpoint
-# (<account>.r2.cloudflarestorage.com). Refuse every other destination, so a
-# plan can never send local bytes anywhere else.
-UPLOAD_HOST_SUFFIX = '.r2.cloudflarestorage.com'
+# So-me Studio presigns path-style URLs on its own Cloudflare R2 account
+# endpoint. Refuse every other destination, other R2 accounts included, so a
+# plan can never send local bytes anywhere else. A wrong value fails closed:
+# the upload is refused and the user uploads in the So-me Studio media library.
+UPLOAD_HOST = '8ceee95d15684ff4afd5e8f0d84e4913.r2.cloudflarestorage.com'
 
 # ISO base media brands that hold a still image; every other brand is video.
 IMAGE_BRANDS = {b'avif', b'heic', b'heix', b'heim', b'heis', b'mif1', b'msf1'}
@@ -52,7 +53,7 @@ def upload(plan):
             raise ValueError('File content is not the declared image or video type')
         if url.scheme != 'https' or not url.hostname or url.username or url.password or url.fragment:
             raise ValueError('Expected an HTTPS presigned upload URL without credentials or fragment')
-        if not url.hostname.lower().endswith(UPLOAD_HOST_SUFFIX) or url.port not in (None, 443):
+        if url.hostname.rstrip('.').lower() != UPLOAD_HOST or url.port not in (None, 443):
             raise ValueError('Upload URL is not a So-me Studio storage URL')
         prepared.append((item['fileId'], path, size, mime, url))
     results = []
