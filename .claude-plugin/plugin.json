@@ -1,0 +1,28 @@
+{
+  "name": "so-me-studio",
+  "displayName": "Social media studio",
+  "version": "1.0.0",
+  "description": "Draft, publish, and schedule social posts with images, videos, thread chains, and automatic first comments on the social accounts connected to your So-me Studio workspace.",
+  "author": {
+    "name": "7t1 Studio / So-me Studio",
+    "email": "support@so-me.studio",
+    "url": "https://so-me.studio"
+  },
+  "homepage": "https://docs.so-me.studio/mcp/overview",
+  "repository": "https://github.com/7t1-studio/Social-media-scheduler-claude-connector",
+  "license": "MIT",
+  "keywords": [
+    "social-media",
+    "scheduling",
+    "content-calendar",
+    "posting",
+    "drafts",
+    "productivity",
+    "so-me-studio"
+  ],
+  "icon": "./assets/icon.png",
+  "documentationUrl": "https://docs.so-me.studio/mcp/overview",
+  "supportUrl": "https://so-me.studio/contact-us",
+  "privacyPolicyUrl": "https://so-me.studio/privacy-policy",
+  "termsOfServiceUrl": "https://so-me.studio/terms-and-conditions"
+}
