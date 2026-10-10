@@ -12,7 +12,7 @@ spec.loader.exec_module(module)
 
 PNG = b'\x89PNG\r\n\x1a\n' + b'\x00' * 24
 MP4 = b'\x00\x00\x00\x18ftypmp42' + b'\x00' * 24
-UPLOAD_URL = 'https://0123abcd.r2.cloudflarestorage.com/bucket/object?X-Amz-Signature=private'
+UPLOAD_URL = f'https://{module.UPLOAD_HOST}/bucket/object?X-Amz-Signature=private'
 
 
 class UploadTests(unittest.TestCase):
@@ -46,7 +46,7 @@ class UploadTests(unittest.TestCase):
         with patch.object(module.http.client, 'HTTPSConnection', return_value=connection) as cls, \
                 patch('builtins.print') as output:
             module.upload(self.plan)
-        cls.assert_called_once_with('0123abcd.r2.cloudflarestorage.com', 443, timeout=300)
+        cls.assert_called_once_with(module.UPLOAD_HOST, 443, timeout=300)
         self.assertEqual(captured['method'], 'PUT')
         self.assertEqual(captured['target'], '/bucket/object?X-Amz-Signature=private')
         self.assertEqual(captured['body'], self.file.read_bytes())
@@ -82,7 +82,8 @@ class UploadTests(unittest.TestCase):
 
     def test_rejects_a_host_that_is_not_so_me_studio_storage(self):
         for url in ('https://attacker.example/upload',
-                    'https://r2.cloudflarestorage.com.attacker.example/x',
+                    'https://ffffffffffffffffffffffffffffffff.r2.cloudflarestorage.com/bucket/x',
+                    f'https://{module.UPLOAD_HOST}.attacker.example/x',
                     'https://evilr2.cloudflarestorage.com/x'):
             with self.subTest(url=url):
                 self.plan[0]['uploadUrl'] = url
