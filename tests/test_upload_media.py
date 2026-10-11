@@ -3,6 +3,7 @@ import json
 from pathlib import Path
 import tempfile
 import unittest
+import unittest.mock
 from unittest.mock import Mock, patch
 
 spec = importlib.util.spec_from_file_location(
@@ -46,7 +47,8 @@ class UploadTests(unittest.TestCase):
         with patch.object(module.http.client, 'HTTPSConnection', return_value=connection) as cls, \
                 patch('builtins.print') as output:
             module.upload(self.plan)
-        cls.assert_called_once_with(module.UPLOAD_HOST, 443, timeout=300)
+        cls.assert_called_once_with(module.UPLOAD_HOST, 443, timeout=300, context=unittest.mock.ANY)
+        self.assertIsInstance(cls.call_args.kwargs['context'], module.ssl.SSLContext)
         self.assertEqual(captured['method'], 'PUT')
         self.assertEqual(captured['target'], '/bucket/object?X-Amz-Signature=private')
         self.assertEqual(captured['body'], self.file.read_bytes())
