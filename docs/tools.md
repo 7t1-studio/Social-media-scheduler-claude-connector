@@ -59,7 +59,7 @@ Not on this endpoint: analytics, inbox, post comments, approvals, team, billing,
 | `firstComment` | string | One comment posted under the post right after it publishes |
 | `tiktok` | object | The publishing options TikTok requires |
 
-**`threadParts` — chains.** `text` is the head post and `threadParts[0]` is the FIRST REPLY, so a three-post chain is `text` plus two thread parts. Each part is `{ text, fileIds }`; a plain string is read as `{ text }`, and a part needs `text`, `fileIds`, or both. Omit the field for a single post; pass `[]` to clear an existing chain.
+**`threadParts` — chains.** `text` is the head post and `threadParts[0]` is the FIRST REPLY, so a three-post chain is `text` plus two thread parts. Each part is `{ text, fileIds }`; a plain string is read as `{ text }`, and a part needs `text`, `fileIds`, or both. Omit the field for a single post; send an empty array (`[]`) to clear an existing chain.
 
 | Platform | Text per part | Media per part | Parts |
 |----------|---------------|----------------|-------|
@@ -70,7 +70,7 @@ Not on this endpoint: analytics, inbox, post comments, approvals, team, billing,
 
 Bluesky counts graphemes, so one emoji is one unit. Every other target rejects `threadParts` with a 400 that names the target and the supported list; put the whole message in `text` instead. Publishing past the head is best effort: a failed part leaves the head live, the ids that published stay on `metaData.threadPartIds`, and `metaData.threadPartWarning` says how many published and why the chain stopped. Report that warning; never republish the head.
 
-**`firstComment`.** One string, usually hashtags or a link kept out of the caption. Supported on Facebook, Instagram, X, LinkedIn, LinkedIn Page, Threads and YouTube only. Limits: X 280, Threads 500, LinkedIn and LinkedIn Page 1250, Instagram 2200, Facebook 8000, YouTube 10000 characters. Over the limit is a 400. Omit the field to leave an existing comment untouched; pass `""` to clear it.
+**`firstComment`.** One string, usually hashtags or a link kept out of the caption. Supported on Facebook, Instagram, X, LinkedIn, LinkedIn Page, Threads and YouTube only. Limits: X 280, Threads 500, LinkedIn and LinkedIn Page 1250, Instagram 2200, Facebook 8000, YouTube 10000 characters. Over the limit is a 400. Omit the field to leave an existing comment untouched; send an empty string to clear it.
 
 An unsupported target is NOT rejected. The post publishes there without the comment and the response carries a warning:
 
@@ -86,7 +86,7 @@ A TikTok post without `tiktok.privacyLevel` is rejected with `TIKTOK_PRIVACY_LEV
 
 ## Media validation
 
-Call `validate_post_media` before `create_post` or `schedule_post` whenever you generated, edited or picked the media yourself. Pass `targets` (each `{ socialMedia, postType }`) with either library `fileIds` or local `files` metadata, never both. Library files are measured from their own bytes, so the report compares the measured width, height, duration, video codec and frame rate against each destination's rules and returns, per destination, the status, the `measured` values, the configured `limits`, and one issue per mismatch.
+Call `validate_post_media` before `create_post` or `schedule_post` whenever you generated, edited or picked the media yourself. Send `targets` (each `{ socialMedia, postType }`) with either library `fileIds` or local `files` metadata, never both. Library files are measured from their own bytes, so the report compares the measured width, height, duration, video codec and frame rate against each destination's rules and returns, per destination, the status, the `measured` values, the configured `limits`, and one issue per mismatch.
 
 Four issue codes report measured properties: `DIMENSIONS_INVALID`, `ASPECT_RATIO_INVALID`, `CODEC_UNSUPPORTED` and `FRAME_RATE_INVALID`. Each carries `measured`, `required` and a `fix` string naming the exact change, plus `suggestedDimensions` where a crop applies:
 
