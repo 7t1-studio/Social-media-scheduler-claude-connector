@@ -64,7 +64,7 @@ The plugin and the Claude directory connector use the posting endpoint `https://
 | `.claude-plugin/plugin.json` | Plugin manifest and directory listing fields |
 | `.mcp.json` | Connector entry for the hosted MCP server |
 | `skills/social-posting/` | The posting skill and its upload helper |
-| `assets/icon.png` | Plugin icon |
+| `assets/` | Plugin icon |
 | `docs/` | Tool reference, setup guides, listing copy, and the submission checklist |
 
 ## License

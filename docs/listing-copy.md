@@ -40,26 +40,27 @@ For social media managers, creators, and small businesses that already use So-me
 Add the Social media studio plugin to give Claude the full posting workflow as a skill.
 ```
 
-**Categories** (1–5; use the portal's exact labels): Productivity, Marketing, Social media.
+**Categories** (1–5, portal labels): Productivity, Sales and marketing, Communication. The portal has no social media category.
+
+**Author name**: 7t1 Studio / So-me Studio · **Author URL**: https://so-me.studio
 
 | Field | Value |
 |-------|-------|
 | Documentation URL | https://docs.so-me.studio/mcp/overview |
 | Privacy policy URL | https://so-me.studio/privacy-policy |
 | Support contact | support@so-me.studio |
-| Icon | [../assets/icon.png](../assets/icon.png) (1024 × 1024 PNG) |
+| Icon | **Add custom icon URL**: the raw GitHub URL of the plugin icon on `main` (1024 × 1024 PNG). The API host serves no favicon, so the default icon would be blank |
 | Slug (permanent) | Proposed: `social-media-studio`. Decide before publishing; it can never change |
 
 ### Use cases
 
-**Primary use cases**
+**Use cases** (up to three, each a use case ≤ 100 and an example prompt ≤ 500; shown to reviewers only)
 
-```
-1. Plan and schedule a week of posts across several connected social accounts from one conversation, then review the posting calendar.
-2. Write a thread for X, Threads, Bluesky, or Mastodon, with an automatic first comment, and save it as a draft or publish it.
-3. Check images and videos against every destination's media rules before uploading, get the exact fix for each failure, and attach library or uploaded media to posts.
-4. Find, edit, reschedule, unschedule, retry, or delete upcoming posts and drafts.
-```
+| Use case | Example prompt |
+|----------|----------------|
+| Schedule posts across several accounts | Schedule this post on my Mastodon account and my LinkedIn page for next Monday at 9:00 AM UTC: "New on our blog: 5 ways to plan a week of social posts in 30 minutes." Then show me my posting calendar for next week. |
+| Draft an X thread with an automatic first comment | Write a three-post X thread with practical tips for batching a week of social posts. Add "Plan your week at so-me.studio" as an automatic first comment, and save it as a draft in Social media studio. Do not publish or schedule it. |
+| Check a video against platform rules before upload | Before I upload it, check if my video spring-launch.mp4 can be posted as an Instagram Reel, a TikTok video, a Facebook Reel and a Bluesky video. It is an MP4, 1080x1920, 2 minutes long, 120 MB, H.264, 30 fps. Tell me what to change for each platform that fails. |
 
 **What users need before they connect**
 
@@ -75,7 +76,7 @@ A So-me Studio account (so-me.studio) on a workspace plan that includes API/MCP 
 |-------|-------|
 | Company name | 7t1 Studio / So-me Studio |
 | Website | https://so-me.studio |
-| Primary contact | Set in the portal |
+| Primary contact | Prefilled from the submitting Claude account |
 
 ### Authentication
 
@@ -89,14 +90,14 @@ OAuth. The authorization server advertises both dynamic client registration (`re
 
 ### Test & launch
 
-Reviewer instructions (paste into the portal, then add the credentials in the credentials field):
+Reviewer instructions. The portal has one text field for instructions and credentials, so the password goes into that field, on the line marked for it, just before you submit. Never commit the password here. Also check **I have run every tool via MCP Inspector or as a custom connector in Claude**.
 
 ```
-Reviewer account: the e-mail address and password are in the credentials field. The account is a member of the workspace "Social media studio", which has 12 connected social accounts (including X @hisomestudio, Bluesky hisomestudio.bsky.social, Mastodon @somestudio, and the LinkedIn page so-me-0047), a populated media library, drafts, and scheduled posts. It has no two-factor authentication.
+Reviewer account (no two-factor authentication): the e-mail address and the password are on the first lines of this field. The account is a member of the workspace "Social media studio", which has 12 connected social accounts (including X @hisomestudio, Bluesky hisomestudio.bsky.social, Mastodon @somestudio, and the LinkedIn page so-me-0047), a populated media library, drafts, and scheduled posts. It has no two-factor authentication.
 
 1. In Claude, add the connector (or install the Social media studio plugin and connect it from its Connectors tab).
-2. Claude opens the So-me Studio sign-in page. Sign in with the reviewer e-mail address and password.
-3. On the consent page, check that it names Claude and claude.ai, then select Approve. Claude shows the connector as Connected.
+2. Select Connect. The page "Social media studio - Connect to Claude" opens. Enter the e-mail address and password and select "Sign in & allow access".
+3. On "Connect your workspace", check that the workspace is "Social media studio" and select "Allow access". Claude shows the connector as connected with 28 tools (17 read-only, 11 write).
 4. Run the example prompts below. Bluesky and Mastodon posts publish for real to the reviewer accounts; delete them afterwards with "Delete the post I just published" if you want.
 
 Example prompts:
@@ -129,7 +130,7 @@ The portal reads these from the repository, so edit the files and validate again
 
 - Name, display name, version, description, author, and links: [`.claude-plugin/plugin.json`](../.claude-plugin/plugin.json)
 - Listing description: [`README.md`](../README.md)
-- Icon: [`assets/icon.png`](../assets/icon.png)
+- Icon: the `icon` field in `plugin.json`
 
 ### Data handling answers
 
