@@ -8,7 +8,7 @@ https://api.so-me.studio/mcp/claude
 
 It carries the same 28 tools as the `/mcp/posting` endpoint that the ChatGPT and Grok plugins use, and it signs in with OAuth. The server enforces this allowlist for both `tools/list` and `tools/call`. Every tool has a `title`; read tools carry `readOnlyHint: true` and every tool that changes data carries `destructiveHint: true`, so Claude asks for approval before it runs a write.
 
-Not on this endpoint: analytics, inbox, post comments, approvals, team, billing, API keys, webhooks, Reddit, Google Business Profile, and every AI image or video tool. Developers who need the full catalog connect `https://api.so-me.studio/mcp` with an API key; see [setup-claude.md](setup-claude.md). Full product reference: https://docs.so-me.studio/mcp/tools
+Not on this endpoint: analytics, inbox, post comments, approvals, team, billing, account administration, webhooks, Reddit, Google Business Profile, and every AI image or video tool. The developer endpoint with the full catalog is described in [setup-claude.md](setup-claude.md). Full product reference: https://docs.so-me.studio/mcp/tools
 
 ## Tools
 
