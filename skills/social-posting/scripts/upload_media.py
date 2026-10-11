@@ -4,6 +4,7 @@ import argparse
 import http.client
 import json
 from pathlib import Path
+import ssl
 import sys
 from urllib.parse import urlsplit
 
@@ -33,6 +34,18 @@ def sniff_media_family(head):
     return None
 
 
+def tls_context():
+    """System trust store, plus certifi when installed. The python.org macOS
+    build ships without CA certificates until "Install Certificates" runs."""
+    context = ssl.create_default_context()
+    try:
+        import certifi
+    except ImportError:
+        return context
+    context.load_verify_locations(certifi.where())
+    return context
+
+
 def upload(plan):
     if not isinstance(plan, list) or not 1 <= len(plan) <= 20:
         raise ValueError('Plan must contain 1 to 20 uploads')
@@ -57,8 +70,9 @@ def upload(plan):
             raise ValueError('Upload URL is not a So-me Studio storage URL')
         prepared.append((item['fileId'], path, size, mime, url))
     results = []
+    context = tls_context()
     for file_id, path, size, mime, url in prepared:
-        connection = http.client.HTTPSConnection(url.hostname, 443, timeout=300)
+        connection = http.client.HTTPSConnection(url.hostname, 443, timeout=300, context=context)
         try:
             target = url.path or '/'
             if url.query:
