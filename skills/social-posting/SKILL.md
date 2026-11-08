@@ -30,12 +30,12 @@ Only four destinations support chains, at most 24 parts each:
 
 | Destination | Text per part | Media per part |
 |-------------|---------------|----------------|
-| X (`TWITTER`) | 280 characters | 4 |
+| X (`TWITTER`) | 280, X-weighted | 4 |
 | Threads (`THREADS`) | 500 characters | 20 |
-| Bluesky (`BLUESKY`) | 300 graphemes | 4 |
-| Mastodon (`MASTODON`) | 500 characters | 4 |
+| Bluesky (`BLUESKY`) | 300 graphemes, 3,000 bytes | 4 |
+| Mastodon (`MASTODON`) | 500, Mastodon-counted | 4 |
 
-Bluesky counts graphemes, so one emoji is one unit. Every other destination rejects `threadParts` with an error; put the whole message in `text` instead. Publishing past the head post is best effort: a failed part leaves the head live, keeps the parts that published, and returns a warning naming how many published. Report that warning and never republish the head.
+Each destination counts text its own way: X weighs every link as 23 and an emoji or a CJK character as 2; Threads counts an emoji as its UTF-8 bytes; Bluesky counts graphemes (one emoji is one unit) with a 3,000-byte ceiling; Mastodon counts graphemes, every link as 23, a mention `@user@domain` as `@user`, and the content warning with the text. Every other destination rejects `threadParts` with an error; put the whole message in `text` instead. Publishing past the head post is best effort: a failed part leaves the head live, keeps the parts that published, and returns a warning naming how many published. Report that warning and never republish the head.
 
 `firstComment` is a single string posted automatically under the post right after it publishes, usually hashtags or a link the user keeps out of the caption. Supported destinations and their character limits: Facebook 8000, Instagram 2200, X 280, LinkedIn and LinkedIn Page 1250, Threads 500, YouTube 10000. Over the limit is an error. Check `capabilities.firstComment` and `capabilities.firstCommentMaxLength` from `list_accounts` or `get_account` before promising the comment; the same object carries `threads` and `threadPartMaxLength` for chains. An unsupported destination is NOT rejected: the post publishes there without the comment and the response carries `warnings` with `code: "FIRST_COMMENT_UNSUPPORTED"` and the affected platforms. Repeat that warning to the user. With a chain, the comment goes under the last part, not the head. Delivery is separate from publication, so read `firstCommentStatus` (`pending`, `posted`, `failed`, `skipped`) on the post before calling the comment live. A YouTube account connected before the comment permission was added must reconnect in So-me Studio; the service says so in `firstCommentError`.
 

@@ -63,12 +63,12 @@ Not on this endpoint: analytics, inbox, post comments, approvals, team, billing,
 
 | Platform | Text per part | Media per part | Parts |
 |----------|---------------|----------------|-------|
-| `TWITTER` | 280 characters | 4 | 24 |
+| `TWITTER` | 280, X-weighted | 4 | 24 |
 | `THREADS` | 500 characters | 20 | 24 |
-| `BLUESKY` | 300 **graphemes** | 4 | 24 |
-| `MASTODON` | 500 characters | 4 | 24 |
+| `BLUESKY` | 300 **graphemes**, 3,000 bytes | 4 | 24 |
+| `MASTODON` | 500, Mastodon-counted | 4 | 24 |
 
-Bluesky counts graphemes, so one emoji is one unit. Every other target rejects `threadParts` with a 400 that names the target and the supported list; put the whole message in `text` instead. Publishing past the head is best effort: a failed part leaves the head live, the ids that published stay on `metaData.threadPartIds`, and `metaData.threadPartWarning` says how many published and why the chain stopped. Report that warning; never republish the head.
+Each destination counts text its own way: X weighs every link as 23 and an emoji or a CJK character as 2; Threads counts an emoji as its UTF-8 bytes; Bluesky counts graphemes (one emoji is one unit) with a 3,000-byte ceiling; Mastodon counts graphemes, every link as 23, a mention `@user@domain` as `@user`, and the content warning with the text. Every other target rejects `threadParts` with a 400 that names the target and the supported list; put the whole message in `text` instead. Publishing past the head is best effort: a failed part leaves the head live, the ids that published stay on `metaData.threadPartIds`, and `metaData.threadPartWarning` says how many published and why the chain stopped. Report that warning; never republish the head.
 
 **`firstComment`.** One string, usually hashtags or a link kept out of the caption. Supported on Facebook, Instagram, X, LinkedIn, LinkedIn Page, Threads and YouTube only. Limits: X 280, Threads 500, LinkedIn and LinkedIn Page 1250, Instagram 2200, Facebook 8000, YouTube 10000 characters. Over the limit is a 400. Omit the field to leave an existing comment untouched; send an empty string to clear it.
 
